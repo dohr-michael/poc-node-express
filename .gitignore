@@ -1,0 +1,8 @@
+.idea
+dist
+.cache
+node_modules
+roll_and_paper.db
+.env
+dist
+yarn-error.log

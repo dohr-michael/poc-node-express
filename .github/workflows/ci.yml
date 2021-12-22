@@ -1,0 +1,41 @@
+# This is a basic workflow to help you get started with Actions
+
+name: ci
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "bundle"
+  bundle:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+    - run: rm -rf dist
+    - run: npm ci
+    - run: npm run bundle --if-present
+    - name: Push to GitHub Packages
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        registry: docker.pkg.github.com
+        repository: dohr-michael/roll-and-paper-discord/roll-and-paper-discord-api
+        tag_with_ref: true
+  #deploy:
+    # The type of runner that the job will run on
+    #runs-on: ubuntu-latest
+    #if: github.ref == 'refs/heads/master'
